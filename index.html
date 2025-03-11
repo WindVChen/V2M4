@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <title>V2M4: 4D Mesh Animation Reconstruction from a Single Monocular Video</title>
+	<link rel="icon" type="image/x-icon" href="../assets/css/images/favicon.ico">
+    <meta content="V2M4: 4D Mesh Animation Reconstruction from a Single Monocular Video" name="description" />
+    <meta content="summary" name="twitter:card" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link href="static/css/template.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/my_style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        WebFont.load({
+            google: {
+                families: ["Lato:100,100italic,300,300italic,400,400italic,700,700italic,900,900italic", "Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic", "Ubuntu:300,300italic,400,400italic,500,500italic,700,700italic", "Changa One:400,400italic", "Open Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic", "Varela Round:400", "Bungee Shade:regular", "Roboto:300,regular,500"]
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        ! function (o, c) {
+            var n = c.documentElement,
+                t = " w-mod-";
+            n.className += t + "js", ("ontouchstart" in o || o.DocumentTouch && c instanceof DocumentTouch) && (n.className += t + "touch")
+        }(window, document);
+    </script>
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+    <script type="text/javascript" src="static/js/zoom.js"></script>
+    <script type="text/javascript" src="static/js/video_comparison.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/auto-render.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body);
+        });
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MLDP9MKGC8"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-MLDP9MKGC8');
+    </script>
+
+    <script>
+        function showGallery(galleryId) {
+            // Hide all galleries
+            const galleries = document.querySelectorAll('.gallery-content');
+            galleries.forEach(gallery => gallery.style.display = 'none');
+
+            // Show the selected gallery
+            document.getElementById(galleryId).style.display = 'block';
+
+            // Update active button style
+            const buttons = document.querySelectorAll('.mybtn');
+            buttons.forEach(button => button.classList.remove('active-btn'));
+
+            // Set active button
+            event.target.classList.add('active-btn');
+        }
+    </script>
+
+    <!-- Include the model-viewer script -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+
+
+</head>
+
+<body>
+    <div class="section hero nerf-_v2">
+        <div class="container-2 nerf_header_v2 w-container">
+            <h1 class="nerf_title_v2">V2M4: 4D Mesh Animation Reconstruction from a Single Monocular Video</h1>
+            <div class="nerf_subheader_v2">
+                <div>
+                    <a href="https://windvchen.github.io/" target="_blank" class="nerf_authors_v2">Jianqi Chen<span
+                            class="text-span_nerf"></span></a>,&nbsp;
+                    <a href="https://scholar.google.co.uk/citations?user=h5KukxEAAAAJ&hl=en&oi=ao" target="_blank" class="nerf_authors_v2">Biao Zhang<span
+                            class="text-span_nerf"></span></a>,&nbsp;
+                    <a href="https://scholar.google.co.uk/citations?user=9vZn91sAAAAJ&hl=en&oi=ao" target="_blank" class="nerf_authors_v2">Xiangjun Tang<span
+                            class="text-span_nerf"></span></a>,&nbsp;
+                    <a href="https://scholar.google.co.uk/citations?user=0EKXSXgAAAAJ&hl=en" target="_blank" class="nerf_authors_v2">Peter Wonka<span
+                        class="text-span_nerf"></span></a>
+                </div>
+                <div>
+                    <h1 class="nerf_affiliation_v2">King Abdullah University of Science and Technology (KAUST)</h1>
+                </div>
+
+                <div class="external-link">
+                    <a class="btn" href="https://arxiv.org/abs/xxx" role="button" target="_blank">
+                        <i class="ai ai-arxiv"></i> Arxiv </a>
+                    <a class="btn" href="https://arxiv.org/pdf/xxx" role="button" target="_blank">
+                        <i class="fas fa-file-pdf"></i> Paper </a>
+                    <a class="btn" href="https://github.com/WindVChen/V2M4" role="button" target="_blank" disabled>
+                        <i class="fa-brands fa-github"></i> Code </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="white_section_nerf  w-container">
+        <div class="grid-container-1">
+            <img src="data/teaser.png">
+        </div>
+    </div>
+
+    <!-- Add the interactive 3D model viewer -->
+    <div class="white_section_nerf w-container">
+        <h2 class="grey-heading_nerf">4D Reconstructed Mesh Interactive View</h2>
+        <div class="grid-container-6">
+            <div class="model-container">
+                <model-viewer src="data/animations/Sword And Shield Turn.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" shadow-intensity="1" exposure="2" autoplay camera-orbit="31.5deg 61.29deg 2.457m" field-of-view="30deg" touch-action="pan-y">
+                    <div class="progress-bar hide" slot="progress-bar">
+                        <div class="update-bar"></div>
+                    </div>
+                    <button slot="ar-button" id="ar-button">
+                        View in your space
+                    </button>
+                </model-viewer>                
+            </div>
+            <div class="model-container">
+                <model-viewer src="data/animations/dancing_patrick_star.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" shadow-intensity="1" autoplay exposure="2" camera-orbit="5.484deg 84.79deg 1.437m" field-of-view="30deg" touch-action="pan-y">
+                    <div class="progress-bar hide" slot="progress-bar">
+                        <div class="update-bar"></div>
+                    </div>
+                    <button slot="ar-button" id="ar-button">
+                        View in your space
+                    </button>
+                </model-viewer>
+            </div>
+            <div class="model-container">
+                <model-viewer src="data/animations/Reload.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" shadow-intensity="1" exposure="2" autoplay camera-orbit="-5.3deg 78.53deg 2.44m" field-of-view="30deg" touch-action="pan-y">
+                    <div class="progress-bar hide" slot="progress-bar">
+                        <div class="update-bar"></div>
+                    </div>
+                    <button slot="ar-button" id="ar-button">
+                        View in your space
+                    </button>   
+                </model-viewer>                
+            </div>
+            <div class="model-container">
+                <model-viewer src="data/animations/splashing_water.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" shadow-intensity="1" exposure="2" autoplay camera-orbit="7.6deg 76.57deg 2.145m" field-of-view="30deg" touch-action="pan-y">
+                    <div class="progress-bar hide" slot="progress-bar">
+                        <div class="update-bar"></div>
+                    </div>
+                    <button slot="ar-button" id="ar-button">
+                        View in your space
+                    </button>
+                </model-viewer>                
+            </div>
+            <div class="model-container">
+                <model-viewer src="data/animations/Left Turn 45.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" shadow-intensity="1" exposure="2" autoplay camera-orbit="7.6deg 76.57deg 2.399m" field-of-view="30deg" touch-action="pan-y">
+                    <div class="progress-bar hide" slot="progress-bar">
+                        <div class="update-bar"></div>
+                    </div>
+                    <button slot="ar-button" id="ar-button">
+                        View in your space
+                    </button>
+                </model-viewer>  
+            </div>
+            <div class="model-container">
+                <model-viewer src="data/animations/idling_elephant.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" shadow-intensity="1" exposure="2" autoplay camera-orbit="-1.4deg 86.75deg 2.39m" field-of-view="30deg" touch-action="pan-y">
+                    <div class="progress-bar hide" slot="progress-bar">
+                        <div class="update-bar"></div>
+                    </div>
+                    <button slot="ar-button" id="ar-button">
+                        View in your space
+                    </button>
+                </model-viewer>                
+            </div>
+        </div>
+    </div>
+    
+
+
+
+    <div data-anchor="slide1" class="section nerf_section">
+        <h2 class="grey-heading_nerf">Abstract</h2>
+        <div class="w-container grey_container">           
+
+            <p class="paragraph-3 nerf_text nerf_results_text">
+                We present <strong>V2M4</strong>, a novel 4D reconstruction method that <strong>directly generates a usable 4D mesh animation asset from a single monocular video</strong>. Unlike existing approaches that rely on priors from multi-view image and video generation models, our method is based on native 3D mesh generation models. Naively applying 3D mesh generation models to generate a mesh for each frame in a 4D task can lead to issues such as incorrect mesh poses, misalignment of mesh appearance, and inconsistencies in mesh geometry and texture maps. To address these problems, we propose a structured workflow that includes camera search and mesh reposing, condition embedding optimization for mesh appearance refinement, pairwise mesh registration for topology consistency, and global texture map optimization for texture consistency. <strong>Our method outputs high-quality 4D animated assets that are compatible with mainstream graphics and game software.</strong> Experimental results across a variety of animation types and motion amplitudes demonstrate the generalization and effectiveness of our method.
+                <br>
+                
+            </p>
+        </div>
+    </div>
+
+    <div class="white_section_nerf  w-container">
+        <h2 class="grey-heading_nerf" >Method Overview</h2>
+        <div class="grid-container-1">
+            <img src="data/framework.jpg">
+
+            <p  style="font-family: Roboto; font-weight: 350;"><strong>The Workflow of V2M4</strong>. Upon receiving a video sequence \( V_{\text{ref}} \), we generate coarse 3D meshes for each frame, denoted as \(\widetilde{\mathcal{M}}_{\{0, \dots, t\}}\). These initial meshes do not accurately capture the object's movement and appearance as depicted in the input video, and they exhibit inconsistencies in topology and texture. Our method employs a five-stage process: (1) Repose the mesh to accurately reflect object movement; (2) Refine the mesh appearance based on the reference video frames; (3) Ensure inter-mesh topology consistency through mesh registration; (4) Optimize a globally shared texture map across all meshes; (5) Keyframe the meshes, perform interpolation, and convert them into a directly usable 4D animation asset.
+            </p>
+        </div>
+    </div>
+
+
+    <div class="white_section_nerf w-container">
+        <h2 class="grey-heading_nerf">Gallery</h2>
+        <h2 class="grey-heading_nerf">(Switch "<span style='color:red;'>Gallery</span>" Button Below to See More Visual Comparisons)</h2>
+    
+        <!-- Gallery Switching Buttons -->
+        <div class="grid-container-5">
+            <button class="mybtn active-btn" onclick="showGallery('gallery1')">Gallery 1</button>
+            <button class="mybtn" onclick="showGallery('gallery2')">Gallery 2</button>
+            <button class="mybtn" onclick="showGallery('gallery3')">Gallery 3</button>
+            <button class="mybtn" onclick="showGallery('gallery4')">Gallery 4</button>
+            <button class="mybtn" onclick="showGallery('gallery5')">Gallery 5</button>
+        </div>
+    
+        <!-- Gallery Content -->
+        <div id="gallery1" class="gallery-content">
+            <div class="single-result-refvidblock" id="dancing_patrick_star"></div>
+            <div class="single-result-refvidblock" id="idling_elephant"></div>
+            <div class="single-result-refvidblock" id="dancing_spiderman"></div>
+            <div class="single-result-refvidblock" id="deforming_toy_rabbit"></div>
+            <div class="single-result-refvidblock" id="flying_ironman"></div>
+        </div>
+    
+        <div id="gallery2" class="gallery-content" style="display: none;">
+            <div class="single-result-refvidblock" id="firing_pistol"></div>
+            <div class="single-result-refvidblock" id="walking_astronaut"></div>
+            <div class="single-result-refvidblock" id="splashing_water"></div>
+            <div class="single-result-refvidblock" id="laughing_minions"></div>
+            <div class="single-result-refvidblock" id="feeding_squirrel"></div>
+        </div>
+    
+        <div id="gallery3" class="gallery-content" style="display: none;">
+            <div class="single-result-refvidblock" id="pecking_blue_jay"></div>
+            <div class="single-result-refvidblock" id="running_triceratops"></div>
+            <div class="single-result-refvidblock" id="scaring_skull"></div>
+            <div class="single-result-refvidblock" id="trump"></div>
+            <div class="single-result-refvidblock" id="walking_siamese_cat"></div>
+        </div>
+    
+        <div id="gallery4" class="gallery-content" style="display: none;">
+            <div class="single-result-refvidblock" id="1"></div>
+            <div class="single-result-refvidblock" id="2"></div>
+            <div class="single-result-refvidblock" id="3"></div>
+            <div class="single-result-refvidblock" id="4"></div>
+            <div class="single-result-refvidblock" id="5"></div>
+        </div>
+    
+        <div id="gallery5" class="gallery-content" style="display: none;">
+            <div class="single-result-refvidblock" id="6"></div>
+            <div class="single-result-refvidblock" id="7"></div>
+            <div class="single-result-refvidblock" id="8"></div>
+            <div class="single-result-refvidblock" id="9"></div>
+            <div class="single-result-refvidblock" id="10"></div>
+        </div>
+    </div>
+
+
+<script>
+
+    
+    function getModule(inputVideoSrc, TRELLISVideoSrc, DreamMesh4DVideoSrc, OursVideoSrc, level=3) {
+        const module_block = document.createElement("div");
+        // module_block.classList.add("single-result-3Dblock");
+        module_block.innerHTML = `
+            <div class="ref-vid-grid-container-3">
+                <div>
+                    <p style="margin-bottom: 0px; font-weight: bold; text-align: center; position: relative;"> Input Video </p>
+                    <video class="video" loop playsinline autoplay muted src="${inputVideoSrc}"></video>
+                </div>
+                <div>
+                    <p style="margin-bottom: 0px; font-weight: bold; text-align: center;"> TRELLIS </p>
+                    <video class="video" loop playsinline autoplay muted src="${TRELLISVideoSrc}"></video>
+                </div>
+                <div>
+                    <p style="margin-bottom: 0px; font-weight: bold; text-align: center;"> DreamMesh4D </p>
+                    <video class="video" loop playsinline autoplay muted src="${DreamMesh4DVideoSrc}"></video>
+                </div>
+                <div>
+                    <p style="margin-bottom: 0px; font-weight: bold; text-align: center;"> Ours </p>
+                    <video class="video" loop playsinline autoplay muted src="${OursVideoSrc}"></video>
+                </div>
+                
+            </div>
+        `;
+
+        return module_block;
+    }
+
+    function createModule(moduleID, inputVideoSrc, TRELLISVideoSrc, DreamMesh4DVideoSrc, OursVideoSrc) {
+        const module_ = getModule(
+            inputVideoSrc, TRELLISVideoSrc, DreamMesh4DVideoSrc, OursVideoSrc
+        )
+        document.getElementById(moduleID).appendChild(module_)
+    }
+
+    async function readModuleData(modules) {
+        for (let i = 0; i < modules.length; i++) {
+            const module = modules[i];
+            const moduleID = module.id;
+            // const [name, cond] = moduleID.split("-");
+            const name = moduleID;
+
+            // Construct the file path
+            const input_video_path = `data/videos/${name}/input.mp4`;
+            const TRELLIS_video_path = `data/videos/${name}/TRELLIS.mp4`;
+            const DreamMesh4D_video_path = `data/videos/${name}/DreamMesh4D.mp4`;
+            const Ours_video_path = `data/videos/${name}/Ours.mp4`;
+
+
+            console.log(`Current module: ${moduleID}`)
+
+            createModule(moduleID, input_video_path, TRELLIS_video_path, DreamMesh4D_video_path, Ours_video_path);
+
+        }
+    }
+
+    var modules = document.getElementsByClassName('single-result-refvidblock');
+    console.log(`Number of modules: ${modules.length}`)
+    readModuleData(modules);
+
+</script>
+
+
+<h2 class="grey-heading_nerf">Citation</h2>
+<div class="white_section_nerf grey_container w-container">
+    <div class="bibtex">
+        <pre><code>
+    @article{
+    }
+        </code></pre>
+    </div>
+</div>
+
+</body>
+<footer>
+    This project page is inspired by <a href="https://nerfies.github.io">Nerfies</a> and <a href="https://lizhiqi49.github.io/DreamMesh4D/">DreamMesh4D</a>.
+</footer>
+
+</html>
+
