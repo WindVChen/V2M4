@@ -1,13 +1,13 @@
 <div align="center">
 
-<h1><a href="https://arxiv.org/abs/xxx">V2M4: 4D Mesh Animation Reconstruction from a Single Monocular Video</a></h1>
+<h1><a href="https://arxiv.org/abs/2503.09631">V2M4: 4D Mesh Animation Reconstruction from a Single Monocular Video</a></h1>
 
 **[Jianqi Chen](https://windvchen.github.io/), [Biao Zhang](https://scholar.google.co.uk/citations?user=h5KukxEAAAAJ&hl=en&oi=ao), [Xiangjun Tang](https://scholar.google.co.uk/citations?user=9vZn91sAAAAJ&hl=en&oi=ao), and [Peter Wonka](https://scholar.google.co.uk/citations?user=0EKXSXgAAAAJ&hl=en)**
 
 ![](https://komarev.com/ghpvc/?username=windvchenV2M4&label=visitors)
 ![GitHub stars](https://badgen.net/github/stars/windvchen/V2M4)
 [![](https://img.shields.io/badge/license-MIT-blue)](#License)
-[![](https://img.shields.io/badge/arXiv-xxx-b31b1b.svg)](https://arxiv.org/abs/xxx)
+[![](https://img.shields.io/badge/arXiv-2503.09631-b31b1b.svg)](https://arxiv.org/abs/2503.09631)
 <a href='https://windvchen.github.io/V2M4/'>
   <img src='https://img.shields.io/badge/Project-Page-pink?style=flat&logo=Google%20chrome&logoColor=pink'></a>
 
@@ -23,7 +23,11 @@ We present V2M4, a novel 4D reconstruction method that **directly generates a us
 ## Citation & Acknowledgments
 If you find this paper useful in your research, please consider citing:
 ```
-@article{
+@article{chen2025v2m44dmeshanimation,
+        title={V2M4: 4D Mesh Animation Reconstruction from a Single Monocular Video},
+        author={Chen, Jianqi and Zhang, Biao and Tang, Xiangjun and Wonka, Peter},
+        journal={arXiv preprint arXiv:2503.09631},
+        year={2025}
 }
 ```
 
