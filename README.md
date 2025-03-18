@@ -30,9 +30,6 @@ If you encounter any question about the paper, please feel free to contact us. Y
 - [ ] Code release
 
 ## Table of Contents
-- [Updates](#updates)
-- [TODO](#todo)
-- [Table of Contents](#table-of-contents)
 - [Abstract](#abstract)
 - [Results](#results)
 - [Citation \& Acknowledgments](#citation--acknowledgments)
