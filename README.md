@@ -140,6 +140,8 @@ This will generate the following outputs for each animation:
 
 ## Results
 
+The results below were obtained using the TRELLIS generator with DUSt3R for camera search, as described in our initial paper. For improved performance, we recommend trying our newly supported models, such as Hunyuan3D-2.0 and VGGT.
+
 <div align=center><img src="assets/Comparison.jpg" alt="Visual comparisons1"></div>
 
 ## Citation & Acknowledgments
