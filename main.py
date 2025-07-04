@@ -259,8 +259,8 @@ def parse_args():
     parser.add_argument('--use_vggt', action='store_true', help='Use VGGT for camera search, otherwise use dust3R (default: True)')
     parser.add_argument('--use_tracking', action='store_true', help='Use point tracking for mesh registration guidance (!!New Feature!!)')
     parser.add_argument('--blender_path', type=str, default='blender-4.2.1-linux-x64/', help='Path to the Blender executable')
+    parser.add_argument('--max_faces', type=int, default=10000, help='Maximum number of faces for the generated mesh (default: 10000). Lower value can speed up the process for all the 3D generation models but not affect TRELLIS, which leverages a different processing pipeline')
     return parser.parse_args()
-
 
 def get_folder_size(folder):
     """Returns the number of image files in the given folder."""
@@ -425,7 +425,7 @@ if __name__ == "__main__":
                     mesh = cleaner(mesh)
 
                 # more facenum, more cost time. The distribution median is ~15000
-                mesh = FaceReducer()(mesh, max_facenum=20000)
+                mesh = FaceReducer()(mesh, max_facenum=args.max_faces)
 
                 # since in Hunyuan2.0 texture paint, they use xatlas to generate the texture, which may destroy the watertightness. Thus save the attributes of the mesh before painting.
                 vertices_watertight = mesh.vertices @ np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
@@ -482,9 +482,9 @@ if __name__ == "__main__":
                 torch.manual_seed(seed)
 
                 if args.model == "TripoSG":
-                    vertices, faces, mesh = tripoSG_app.run_full(source_path + "/" + img, rmbg_image_rgba, pipeline_rmbg_net, pipeline_triposg_pipe, pipeline_mv_adapter_pipe, True, seed, pipeline_texture, mod_config)
+                    vertices, faces, mesh = tripoSG_app.run_full(source_path + "/" + img, rmbg_image_rgba, pipeline_rmbg_net, pipeline_triposg_pipe, pipeline_mv_adapter_pipe, True, seed, pipeline_texture, mod_config, max_faces=args.max_faces)
                 elif args.model == "Craftsman":
-                    vertices, faces, mesh = craftsman_app.run_full(source_path + "/" + img, rmbg_image_rgba, pipeline_crafts, pipeline_mv_adapter_pipe, True, seed, pipeline_texture, mod_config)
+                    vertices, faces, mesh = craftsman_app.run_full(source_path + "/" + img, rmbg_image_rgba, pipeline_crafts, pipeline_mv_adapter_pipe, True, seed, pipeline_texture, mod_config, max_faces=args.max_faces)
 
                 outputs = {'mesh': [None], 'mesh_genTex': [None]}
 

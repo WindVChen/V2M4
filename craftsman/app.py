@@ -43,7 +43,7 @@ def get_random_hex():
 def get_unique_filename():
     return f"{uuid.uuid4()}_{int(time.time() * 1000)}"
 
-def run_full(image: str, rmbg_img=None, crafts_pipeline=None, mv_adapter_pipe=None, align_scale_with_Trellis=False, seed=0, texture_pipe=None, mod_config=None):
+def run_full(image: str, rmbg_img=None, crafts_pipeline=None, mv_adapter_pipe=None, align_scale_with_Trellis=False, seed=0, texture_pipe=None, mod_config=None, max_faces=10000):
     TMP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), get_unique_filename())
     os.makedirs(TMP_DIR, exist_ok=True)
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -97,7 +97,7 @@ def run_full(image: str, rmbg_img=None, crafts_pipeline=None, mv_adapter_pipe=No
                 mesh = cleaner(mesh)
 
             # more facenum, more cost time. The distribution median is ~15000
-            mesh = FaceReducer()(mesh, max_facenum=20000)
+            mesh = FaceReducer()(mesh, max_facenum=max_faces)
 
             if align_scale_with_Trellis:
                 # ipdb.set_trace()

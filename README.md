@@ -23,6 +23,9 @@ If you encounter any question about the paper, please feel free to contact us. Y
 
 
 ## Updates
+
+[**07/04/2025**] Evaluation code released.
+
 [**06/30/2025**] 🎉 Code is now publicly released! We invite you to try it out. The released version includes several **NEW FEATURES** beyond the initial paper:
 
 - Support for multiple state-of-the-art 3D generators: **TRELLIS**, **Hunyuan3D-2.0**, **TripoSG**, and **CraftsMan3D**
@@ -41,6 +44,7 @@ Explore these new capabilities and let us know your feedback! 🚀🚀🚀
 - [Requirements & Installation](#Requirements--Installation)
 - [4D Mesh Animation Reconstruction](#4D-Mesh-Animation-Reconstruction)
 - [Rendering videos based on the reconstructed results](#rendering-videos-based-on-the-reconstructed-results)
+- [Evaluation](#evaluation)
 - [Results](#results)
 - [Citation & Acknowledgments](#citation--acknowledgments)
 - [License](#license)
@@ -137,6 +141,28 @@ This will generate the following outputs for each animation:
 - Your results folder should contain the reconstructed `.glb` files with `_texture_consistency_sample.glb` suffix
 - An `extrinsics_list.pkl` file for each animation (automatically generated during reconstruction)
 - If using `--baseline`, files with `_baseline_sample.glb` suffix should also be present
+
+## Evaluation
+To evaluate the quality of animation reconstruction results against ground truth videos, we provide a comprehensive evaluation script that calculates several widely used video similarity metrics.
+
+The evaluation includes the following metrics: **FVD**, **LPIPS** , **DreamSim**, and **CLIP Loss**. 
+
+```bash
+cd evaluation
+python evaluation.py --gt_videos_path {path_to_GT_videos} --result_videos_path {path_to_V2M4_rendering_videos}
+```
+
+Please ensure your video structure follows this format:
+```
+├── path_to_GT_videos/
+│   ├── animation1.mp4
+│   ├── animation2.mp4
+│   └── ...
+├── path_to_V2M4_rendering_videos/
+│   ├── animation1.mp4
+│   ├── animation2.mp4
+│   └── ...
+```
 
 ## Results
 
