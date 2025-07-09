@@ -24,6 +24,11 @@ If you encounter any question about the paper, please feel free to contact us. Y
 
 ## Updates
 
+[**07/09/2025**] Benchmark Data Released.👋 We have released our evaluation dataset on [Google Drive](https://drive.google.com/drive/folders/1cv-GmODZ0eMGSh_aX8XKuFcRi6BOpUo0?usp=sharing). The benchmark consists of two folders:
+
+- **simple**: Contains 20 animation videos from Consistent4D, featuring objects with simple topologies and subtle movements.
+- **complex**: Contains 20 animation videos, each paired with its original 4D file (`.fbx`/`.blend`) sourced from Mixamo and Sketchfab. These samples cover larger-scale object motions and more complex topologies.
+
 [**07/04/2025**] Evaluation code released.
 
 [**06/30/2025**] 🎉 Code is now publicly released! We invite you to try it out. The released version includes several **NEW FEATURES** beyond the initial paper:
@@ -34,7 +39,7 @@ If you encounter any question about the paper, please feel free to contact us. Y
 
 Explore these new capabilities and let us know your feedback! 🚀🚀🚀
 
-[**06/25/2025**] Paper accepted by ICCV 2025. 🎉🎉
+[**06/25/2025**] Paper accepted by **ICCV 2025**. 🎉🎉
 
 [**03/18/2025**] Repository init.
 
@@ -65,9 +70,9 @@ We present V2M4, a novel 4D reconstruction method that **directly generates a us
    - The code has been tested with **Python 3.10 + Pytorch 2.4.0 + CUDA 12.1**.
 
 3. Datasets
-   - There have been demo-datasets in [examples](examples), you can directly run the reconstruction code below to see the results.
+   - There have been demo-datasets in [examples](examples), you can directly run the reconstruction code below to see the results. For the full benchmark dataset used in our paper, please access [Google Drive](https://drive.google.com/drive/folders/1cv-GmODZ0eMGSh_aX8XKuFcRi6BOpUo0?usp=sharing) to download the evaluation dataset.
    - If you want to test your own videos, please follow the format of the demo datasets. (The input image frames could be either RGB images with background or transparent RGBA images.) We also provide some useful data preparation scripts in [data_preparation_tools](data_preparation_tools) to help you prepare the input data.
-  *(For better performance, it is recommended that the object in the first frame has minimal part overlap and that no parts are touching each other. This helps avoid artificial topology issues during reconstruction.)*
+  *(For better performance, it is **highly recommended** that **the object in the first frame has minimal part overlap and that no parts are touching each other**. This helps avoid artificial topology issues during reconstruction.)*
 
 ## 4D Mesh Animation Reconstruction
 To reconstruct a 4D mesh animation from a single monocular video, please refer to the following command:
@@ -105,7 +110,7 @@ python main.py \
 python main.py --root examples --output results --model Hunyuan --N 1 --n 0 --skip 5 --seed 42 --use_vggt --use_tracking --blender_path blender-4.2.1-linux-x64/
 ```
 
-*Note: In some cases, the reconstruction results may not be fully satisfactory. We recommend experimenting with different random seeds and adjusting the `--skip` value by ±1 to potentially achieve better outcomes.*
+***Note:** In some cases, the reconstruction results may not be satisfactory. We recommend experimenting with different random seeds and adjusting the `--skip` value (for videos with more intense motion, use a smaller `--skip` value) to potentially achieve better outcomes.*
 
 ## Rendering videos based on the reconstructed results 
 
