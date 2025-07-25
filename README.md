@@ -24,6 +24,11 @@ If you encounter any question about the paper, please feel free to contact us. Y
 
 ## Updates
 
+[**07/25/2025**] Enhanced the experimental **CoTracker3** tracking feature!  
+- Added a new `--tracking_camera_radius` argument to control the camera's distance from the object, helping keep the object within view during motion.  
+- Introduced debugging visualizations: tracking videos and tracked result videos are now saved for easy review.  
+**How this feature works:** By tracking key points across rendered frames, we regularize mesh registration to keep vertex positions consistent throughout the animation.
+
 [**07/09/2025**] Benchmark Data Released.👋 We have released our evaluation dataset on [Google Drive](https://drive.google.com/drive/folders/1cv-GmODZ0eMGSh_aX8XKuFcRi6BOpUo0?usp=sharing). The benchmark consists of two folders:
 
 - **simple**: Contains 20 animation videos from Consistent4D, featuring objects with simple topologies and subtle movements.
@@ -88,7 +93,8 @@ python main.py \
   --seed 42 \
   --use_vggt         # (Highly Recommend) Use VGGT for camera search; omit for USING DUSt3R
   --baseline         # (optional) Run the baseline model, i.e., directly use the 3D mesh generator to generate a mesh for each frame without V2M4
-  --use_tracking     # (optional) Use point tracking for mesh registration guidance, will add more memory usage and time cost
+  --use_tracking     # (experimental) Use point tracking for mesh registration guidance, will add more memory usage and time cost
+  --tracking_camera_radius {radius}  # (experimental) Set the camera tracking radius (this is only valid when using `--use_tracking`) to keep the object visible during motion, default is 8
   --blender_path {your_blender_path}  # Directory path of Blender executable
 ```
 
@@ -103,14 +109,17 @@ python main.py \
 - `--baseline`: Run the baseline model (flag)
 - `--use_vggt`: Use VGGT for camera search (omit for USING DUSt3R)
 - `--use_tracking`: Use point tracking for mesh registration guidance
+- `--tracking_camera_radius`: Set the camera tracking radius to keep the object visible during motion (default: 8, only valid when using `--use_tracking`)
 - `--blender_path`: Path to Blender executable (example: `blender-4.2.1-linux-x64/`)
 
 **Example:**
 ```bash
-python main.py --root examples --output results --model Hunyuan --N 1 --n 0 --skip 5 --seed 42 --use_vggt --use_tracking --blender_path blender-4.2.1-linux-x64/
+python main.py --root examples --output results --model Hunyuan --N 1 --n 0 --skip 5 --seed 42 --use_vggt --use_tracking --tracking_camera_radius 8 --blender_path blender-4.2.1-linux-x64/
 ```
 
-***Note:** In some cases, the reconstruction results may not be satisfactory. We recommend experimenting with different random seeds and adjusting the `--skip` value (for videos with more intense motion, use a smaller `--skip` value) to potentially achieve better outcomes.*
+***Note1:** In some cases, the reconstruction results may not be satisfactory. We recommend experimenting with different random seeds and adjusting the `--skip` value (for videos with more intense motion, use a smaller `--skip` value) to potentially achieve better outcomes.*
+
+***Note2:** If the object disappears from view during animation, it may be because the camera tracking radius is too small, causing the object to move out of frame when rendering from multiple views. To debug, check the saved tracking videos. You can fix this by increasing the `--tracking_camera_radius` value to keep the object visible, or by disabling tracking (remove `--use_tracking`).*
 
 ## Rendering videos based on the reconstructed results 
 

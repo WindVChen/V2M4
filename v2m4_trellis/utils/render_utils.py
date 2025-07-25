@@ -609,12 +609,12 @@ def render_multiview(sample, resolution=512, nviews=30, init_extrinsics=None, re
     return res['color'], extrinsics, intrinsics
 
 
-def render_multiview_gradient(sample, resolution=512, nviews=30, init_extrinsics=None, random_indices=[], envmap=None, return_type='color', input_intr_extrincs=None, return_intr_extrincs=False, return_rast_vertices=False):
+def render_multiview_gradient(sample, resolution=512, nviews=30, init_extrinsics=None, random_indices=[], envmap=None, return_type='color', input_intr_extrincs=None, return_intr_extrincs=False, return_rast_vertices=False, radius=2):
     assert return_type in ['color', 'envmap', 'normal_map', 'normal', 'mask'], f"Unsupported return type: {return_type}"
     assert envmap is not None or return_type != 'envmap', "envmap must be provided for rendering envmap"
 
     if input_intr_extrincs is None:
-        r = 2
+        r = radius
         fov = 40
         cams = [sphere_hammersley_sequence(i, nviews) for i in range(nviews)]
         yaws = [cam[0] for cam in cams]

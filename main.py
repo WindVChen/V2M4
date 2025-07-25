@@ -258,6 +258,7 @@ def parse_args():
     parser.add_argument('--skip', type=int, default=5, help='Skip every N frames for large movement of the object (default: 5)')
     parser.add_argument('--use_vggt', action='store_true', help='Use VGGT for camera search, otherwise use dust3R (default: True)')
     parser.add_argument('--use_tracking', action='store_true', help='Use point tracking for mesh registration guidance (!!New Feature!!)')
+    parser.add_argument('--tracking_camera_radius', type=int, default=8, help='Adapt the camera radius to ensure the object motion is within the camera view (this argument is only used when --use_tracking is set)')
     parser.add_argument('--blender_path', type=str, default='blender-4.2.1-linux-x64/', help='Path to the Blender executable')
     parser.add_argument('--max_faces', type=int, default=10000, help='Maximum number of faces for the generated mesh (default: 10000). Lower value can speed up the process for all the 3D generation models but not affect TRELLIS, which leverages a different processing pipeline')
     return parser.parse_args()
@@ -662,7 +663,7 @@ if __name__ == "__main__":
             with torch.no_grad():
                 nviews_track = 20
                 # use the first frame as the extrinsics since these meshes are in the similar position
-                intr_track, extr_track = render_utils.render_multiview_gradient(None, nviews=nviews_track, init_extrinsics=extrinsics_list[0], return_intr_extrincs=True)
+                intr_track, extr_track = render_utils.render_multiview_gradient(None, nviews=nviews_track, init_extrinsics=extrinsics_list[0], return_intr_extrincs=True, radius=args.tracking_camera_radius)
 
                 track_video = [None] * nviews_track
 
@@ -696,6 +697,12 @@ if __name__ == "__main__":
                             track_video[j] = observations_target_all_track[j][None]
                         else:
                             track_video[j] = torch.cat((track_video[j], observations_target_all_track[j][None]), dim=0)
+
+                # save the track_video
+                for i in range(nviews_track):
+                    imageio.mimsave(os.path.join(output_path, f"track_video{i}.mp4"), track_video[i].permute(0, 2, 3, 1).cpu().numpy() * 255, fps=30)
+                    if i == 5:
+                        break  # only save the first 6 views for debugging
 
                 # concatenate the video
                 for i in range(nviews_track):
@@ -756,6 +763,23 @@ if __name__ == "__main__":
                         # If only one chunk, just use it directly
                         pred_tracks[i] = all_tracks[0]
                         pred_visibilities[i] = all_visibilities[0]
+
+                    if i < 6: # only display the first 6 views for debugging
+                        # only display 1000 query points
+                        random_indices = torch.randperm(pred_tracks[i].shape[1])[:1000]
+
+                        vis = Visualizer(
+                            save_dir=output_path,
+                            linewidth=1,
+                            mode='rainbow',
+                            tracks_leave_trace=-1
+                        )
+                        vis.visualize(
+                            video=track_video[i],
+                            tracks=pred_tracks[i][:, random_indices].unsqueeze(0),
+                            visibility=pred_visibilities[i][:, random_indices].unsqueeze(0),
+                            filename='track_result' + str(i))
+
 
         '----------------------------------------------------------------------------------'
 
