@@ -24,6 +24,8 @@ If you encounter any question about the paper, please feel free to contact us. Y
 
 ## Updates
 
+[**07/30/2025**] Our paper v2 is now updated on ArXiv ([link](https://arxiv.org/abs/2503.09631))! In this update, we've added more quantitative results in Appendix B, including comparisons of different 3D base generators, dense stereo networks, and ablation studies of our design choices.
+
 [**07/25/2025**] Enhanced the experimental **CoTracker3** tracking feature!  
 - Added a new `--tracking_camera_radius` argument to control the camera's distance from the object, helping keep the object within view during motion.  
 - Introduced debugging visualizations: tracking videos and tracked result videos are now saved for easy review.  
