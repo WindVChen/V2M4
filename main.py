@@ -3,6 +3,7 @@ import os
 os.environ['SPCONV_ALGO'] = 'native'        # Can be 'native' or 'auto', default is 'auto'.
                                             # 'auto' is faster but will do benchmarking at the beginning.
                                             # Recommended to set to 'native' if run only once.
+import rembg
 import math
 import subprocess
 import shutil
@@ -365,6 +366,8 @@ if __name__ == "__main__":
         pipeline_paint.models['multiview_model'].pipeline.text_encoder.requires_grad = False
         pipeline_paint.models['multiview_model'].pipeline.feature_extractor.requires_grad = False
 
+    rembg_session = rembg.new_session('birefnet-massive')
+
     for animation in assigned_animations:
         source_path = animation
         output_path = os.path.join(default_output_root if args.output == "" else args.output, animation.split("/")[-1])
@@ -411,11 +414,11 @@ if __name__ == "__main__":
                     image,
                     # Optional parameters
                     seed=seed,
-                    save_path=output_path + "/" + base_name + "_rmbg.png",
+                    save_path=output_path + "/" + base_name + "_rmbg.png", rembg_session=rembg_session
                 )
             elif args.model == "Hunyuan":
                 save_path = output_path + "/" + base_name + "_rmbg.png"
-                cropped_image, rmbg_image = TrellisImageTo3DPipeline.preprocess_image(image, return_rgba=True)
+                cropped_image, rmbg_image = TrellisImageTo3DPipeline.preprocess_image(image, return_rgba=True, rembg_session=rembg_session)
                 rmbg_image.save(save_path)
                 cropped_image.save(save_path.replace(".png", "_cropped.png"))
 
@@ -477,7 +480,7 @@ if __name__ == "__main__":
                 )
             elif args.model == "TripoSG" or args.model == "Craftsman":
                 save_path = output_path + "/" + base_name + "_rmbg.png"
-                _, rmbg_image_rgba, rmbg_image = TrellisImageTo3DPipeline.preprocess_image(image, return_all_rbga=True)
+                _, rmbg_image_rgba, rmbg_image = TrellisImageTo3DPipeline.preprocess_image(image, return_all_rbga=True, rembg_session=rembg_session)
                 rmbg_image.save(save_path)
 
                 torch.manual_seed(seed)
@@ -533,7 +536,7 @@ if __name__ == "__main__":
 
             "======== Section 4.1 - Camera Search and Mesh Re-Pose ========"
             rend_img, params = render_utils.find_closet_camera_pos(outputs['mesh'][0], rmbg_image, save_path=output_path + "/" + base_name, is_Hunyuan=(args.model == "Hunyuan" or args.model == "TripoSG"), use_vggt=args.use_vggt)  # Craftsman is similar to TRELLIS canonical pose
-            imageio.imsave(output_path + "/" + base_name + "_sample_mesh_align.png", rend_img, prior_params=params)
+            imageio.imsave(output_path + "/" + base_name + "_sample_mesh_align.png", rend_img)
             if args.model == "TRELLIS":
                 rend_img, params = render_utils.find_closet_camera_pos(outputs['gaussian'][0], rmbg_image, params=params, use_vggt=args.use_vggt)
                 imageio.imsave(output_path + "/" + base_name + "_sample_gs_align.png", rend_img)

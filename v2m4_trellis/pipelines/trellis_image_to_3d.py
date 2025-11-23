@@ -82,7 +82,7 @@ class TrellisImageTo3DPipeline(Pipeline):
         self.image_cond_model_transform = transform
 
     @staticmethod
-    def preprocess_image(input: Image.Image, return_rgba=False, return_all_rbga=False) -> Image.Image:
+    def preprocess_image(input: Image.Image, return_rgba=False, return_all_rbga=False, rembg_session=None) -> Image.Image:
         """
         Preprocess the input image.
         """
@@ -102,7 +102,8 @@ class TrellisImageTo3DPipeline(Pipeline):
             if scale < 1:
                 input = input.resize((int(input.width * scale), int(input.height * scale)), Image.Resampling.LANCZOS)
             # use birefnet-massive not u2net for better performance
-            rembg_session = rembg.new_session('birefnet-massive')
+            if rembg_session is None:
+                rembg_session = rembg.new_session('birefnet-massive')
             output = rembg.remove(input, session=rembg_session)
         output_np = np.array(output)
         alpha = output_np[:, :, 3]
@@ -302,6 +303,7 @@ class TrellisImageTo3DPipeline(Pipeline):
         formats: List[str] = ['mesh', 'gaussian', 'radiance_field'],
         preprocess_image: bool = True,
         save_path: Optional[str] = None,
+        rembg_session=None,
     ) -> Tuple[Image.Image, dict]:
         """
         Run the pipeline.
@@ -314,7 +316,7 @@ class TrellisImageTo3DPipeline(Pipeline):
             preprocess_image (bool): Whether to preprocess the image.
         """
         if preprocess_image:
-            image, before_crop = self.preprocess_image(image)
+            image, before_crop = self.preprocess_image(image, rembg_session=rembg_session)
             before_crop.save(save_path)
             image.save(save_path.replace(".png", "_cropped.png"))
         cond = self.get_cond([image])

@@ -189,12 +189,14 @@ The results below were obtained using the TRELLIS generator with DUSt3R for came
 ## Citation & Acknowledgments
 If you find this paper useful in your research, please consider citing:
 ```
-@inproceedings{chen2025v2m4,
-        title={V2M4: 4D Mesh Animation Reconstruction from a Single Monocular Video},
-        author={Chen, Jianqi and Zhang, Biao and Tang, Xiangjun and Wonka, Peter},
-        booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
-        year={2025}
-    }
+@InProceedings{Chen_2025_ICCV,
+    author    = {Chen, Jianqi and Zhang, Biao and Tang, Xiangjun and Wonka, Peter},
+    title     = {V2M4: 4D Mesh Animation Reconstruction from a Single Monocular Video},
+    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+    month     = {October},
+    year      = {2025},
+    pages     = {11643-11653}
+}
 ```
 
 We gratefully acknowledge the authors and contributors of the following open-source projects, whose work made this research possible: [TRELLIS](https://github.com/microsoft/TRELLIS), [CraftsMan3D](https://github.com/wyysf-98/CraftsMan3D), [TripoSG](https://github.com/VAST-AI-Research/TripoSG), [Hunyuan3D-2.0](https://github.com/Tencent-Hunyuan/Hunyuan3D-2), [DUSt3R](https://github.com/naver/dust3r), [VGGT](https://github.com/facebookresearch/vggt), [CoTracker3](https://github.com/facebookresearch/co-tracker), etc. We appreciate their commitment to open research and the broader scientific community.
