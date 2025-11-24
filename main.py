@@ -129,7 +129,7 @@ if __name__ == "__main__":
                 import craftsman.app as craftsman_app
                 from craftsman.pipeline import CraftsManPipeline
 
-                checkpoints_dir_CraftsMan = f"/{checkpoints_dir}/craftsman-DoraVAE"
+                checkpoints_dir_CraftsMan = f"{checkpoints_dir}/craftsman-DoraVAE"
                 pipeline_crafts = CraftsManPipeline.from_pretrained(checkpoints_dir_CraftsMan, device="cuda", torch_dtype=torch.bfloat16) # bf16 for fast inference
 
             pipeline_mv_adapter_pipe = prepare_pipeline(
