@@ -12,6 +12,9 @@ from pymeshfix import _meshfix
 import igraph
 import cv2
 from PIL import Image
+import os
+from natsort import natsorted, ns
+import shutil
 from .random_utils import sphere_hammersley_sequence
 from .render_utils import render_multiview
 from ..representations import Strivec, Gaussian, MeshExtractResult
@@ -564,3 +567,69 @@ def to_glb(
     vertices = vertices @ np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]])
     mesh = trimesh.Trimesh(vertices, faces, visual=trimesh.visual.TextureVisuals(uv=uvs, image=texture), process=False)
     return mesh
+
+
+def render_video_and_glbs(outputs, base_name, output_path, init_extrinsics=None, fix_geometry=False, inplace_mesh_change=False):
+    # GLB files can be extracted from the outputs
+    glb = to_glb(
+        outputs['gaussian'][0],
+        outputs['mesh'][0],
+        # Optional parameters
+        simplify=0 if fix_geometry else 0.95,          # Ratio of triangles to remove in the simplification process
+        texture_size=1024,      # Size of the texture used for the GLB
+        init_extrinsics=init_extrinsics, # Initial extrinsics for the camera
+        fill_holes=False if fix_geometry else True, # Fill holes in the mesh
+        return_watertight=inplace_mesh_change, # Return a watertight mesh (no texture)
+        bake_v_color=True if inplace_mesh_change else False, # Bake vertex colors into the texture
+    )
+    glb.export(output_path + "/" + base_name + "_sample.glb")
+
+    if inplace_mesh_change:
+        # rotate as glb has a rotation pre-processing
+        outputs['mesh'][0].vertices = torch.from_numpy(glb.vertices @ np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])).float().cuda()
+        outputs['mesh'][0].faces = torch.from_numpy(glb.faces).long().cuda()
+
+        vertex_normals = torch.from_numpy(glb.vertex_normals)
+        outputs['mesh'][0].vertex_attrs = vertex_normals.repeat(1, 2).float().cuda()
+        outputs['mesh'][0].vertex_attrs[:, :3] = torch.from_numpy(glb.visual.vertex_colors)[:, :3] / 255.
+        
+        outputs['mesh'][0].face_normal = outputs['mesh'][0].comput_face_normals(outputs['mesh'][0].vertices, outputs['mesh'][0].faces)
+
+    return glb.visual
+
+
+def outputs_to_files_for_blender(input_glb_folder):
+    # Input and output paths
+    output_npy_path = input_glb_folder + "/output_vertex_offsets.npy"
+    output_texture_path = input_glb_folder + "/output_texture.png"  # Path to save the texture
+
+    # Get all GLB files and sort them by time order
+    glb_files = sorted([f for f in os.listdir(input_glb_folder) if f.endswith("_texture_consistency_sample.glb")])
+    glb_files = natsorted(glb_files, alg=ns.PATH)
+
+    # Read the first frame as a reference
+    first_mesh = trimesh.load(os.path.join(input_glb_folder, glb_files[0]), process=False)
+    ref_vertices = np.array(first_mesh.geometry['geometry_0'].vertices)
+
+    # copy and rename the first frame using shutil
+    shutil.copy(os.path.join(input_glb_folder, glb_files[0]), os.path.join(input_glb_folder, "output_mesh.glb"))
+
+    # Try to save the texture (only executed the first time)
+    if hasattr(first_mesh.geometry['geometry_0'].visual, "material") and hasattr(first_mesh.geometry['geometry_0'].visual.material, "baseColorTexture"):
+        texture = first_mesh.geometry['geometry_0'].visual.material.baseColorTexture
+        texture.save(output_texture_path)
+
+    # Store vertex offsets for all frames
+    vertex_offsets = []
+
+    for glb_file in glb_files:
+        mesh = trimesh.load(os.path.join(input_glb_folder, glb_file), process=False)
+        current_vertices = np.array(mesh.geometry['geometry_0'].vertices)
+        offset = current_vertices - ref_vertices
+        vertex_offsets.append(offset)
+
+        ref_vertices = current_vertices
+
+    # Convert to NumPy array (num_frames, num_vertices, 3)
+    vertex_offsets = np.array(vertex_offsets)
+    np.save(output_npy_path, vertex_offsets)

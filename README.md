@@ -24,6 +24,8 @@ If you encounter any question about the paper, please feel free to contact us. Y
 
 ## Updates
 
+[**11/23/2025**] Repository restructured for improved organization and usability. To access the previous version, see commit [513ed11](https://github.com/WindVChen/V2M4/tree/513ed117ae46929f9a8d2bcababae76a906643d7).
+
 [**07/30/2025**] Our paper v2 is now updated on ArXiv ([link](https://arxiv.org/abs/2503.09631))! In this update, we've added more quantitative results in Appendix B, including comparisons of different 3D base generators, dense stereo networks, and ablation studies of our design choices.
 
 [**07/25/2025**] Enhanced the experimental **CoTracker3** tracking feature!  

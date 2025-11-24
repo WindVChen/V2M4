@@ -1,5 +1,6 @@
 from . import samplers
 from .trellis_image_to_3d import TrellisImageTo3DPipeline
+from . import registration, texture_optimization, mesh_generation
 
 
 def from_pretrained(path: str):
